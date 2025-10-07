@@ -80,4 +80,5 @@ License
 This project is open-source and available under the MIT License. 
 
 Made by Jaivin Vachhani 
+
 Email: jaivinvachhani@gmail.com
