@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoForge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+        }
+        /* Simple transition for smooth appearance */
+        .hidden {
+            display: none;
+        }
+        /* Keyframes for the sliding animation */
+        @keyframes slide {
+            from {
+                transform: translateX(100vw);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+        .animate-slide {
+            animation: slide 15s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-2xl p-6 md:p-8 bg-white border border-slate-200 rounded-lg shadow-sm">
+        <!-- Header -->
+        <h1 class="text-4xl font-bold text-center text-slate-800 mb-2 underline">CryptoForge</h1>
+        <p class="text-xl text-center text-slate-600 mb-6">A Cryptography and Encoding Tool</p>
+        <p class="text-center text-slate-500 mb-8">Select a technique and transform your text instantly.</p>
+
+        <!-- Input Text Area -->
+        <div class="mb-4">
+            <label for="inputText" class="block text-sm font-medium text-slate-600 mb-2">Input Text</label>
+            <textarea id="inputText" rows="5" class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg p-3 focus:ring-1 focus:ring-slate-500 focus:border-slate-500 transition duration-200 placeholder-slate-400" placeholder="Type or paste your text here..."></textarea>
+        </div>
+
+        <!-- Technique Selection Dropdown -->
+        <div class="mb-4">
+            <label for="cryptoTechnique" class="block text-sm font-medium text-slate-600 mb-2">Select Technique</label>
+            <select id="cryptoTechnique" class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg p-3 focus:ring-1 focus:ring-slate-500 focus:border-slate-500 transition duration-200">
+                <option value="base64-encode">Base64 Encode</option>
+                <option value="base64-decode">Base64 Decode</option>
+                <option value="url-encode">URL Encode</option>
+                <option value="url-decode">URL Decode</option>
+                <option value="md5-hash">MD5 Hash</option>
+                <option value="sha256-hash">SHA-256 Hash</option>
+                <option value="caesar-cipher">Caesar Cipher</option>
+                <option value="morse-encode">Morse Code Encode</option>
+                <option value="morse-decode">Morse Code Decode</option>
+                <option value="reverse-text">Reverse Text</option>
+            </select>
+        </div>
+        
+        <!-- Caesar Cipher Shift Input (Initially hidden) -->
+        <div id="caesar-shift-container" class="mb-4 hidden">
+             <label for="caesarShift" class="block text-sm font-medium text-slate-600 mb-2">Caesar Cipher Shift (1-25)</label>
+             <input type="number" id="caesarShift" value="13" min="1" max="25" class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg p-3 focus:ring-1 focus:ring-slate-500 focus:border-slate-500 transition duration-200">
+        </div>
+
+        <!-- Transform Button -->
+        <div class="text-center mb-6">
+            <button id="transformButton" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500">
+                Transform
+            </button>
+        </div>
+
+        <!-- Output Text Area -->
+        <div>
+            <label for="outputText" class="block text-sm font-medium text-slate-600 mb-2">Output</label>
+            <div class="relative">
+                <textarea id="outputText" rows="5" class="w-full bg-slate-50 border border-slate-200 text-slate-700 rounded-lg p-3 pr-12 focus:outline-none font-mono" readonly placeholder="Result will appear here..."></textarea>
+                <button id="copyButton" class="absolute top-2 right-2 p-2 bg-slate-200 hover:bg-slate-300 rounded-lg text-slate-600 transition-colors" title="Copy to clipboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"></path><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"></path></svg>
+                </button>
+            </div>
+            <p id="copy-message" class="text-sm text-green-600 mt-2 text-center h-4"></p>
+        </div>
+    </div>
+
+    <!-- Sliding Watermark -->
+    <div class="fixed bottom-0 left-0 w-full bg-slate-200/70 backdrop-blur-sm py-2 overflow-hidden whitespace-nowrap shadow-t-lg">
+        <div class="inline-block animate-slide">
+            <span class="mx-8 text-sm text-slate-600 font-medium">Made by Jaivin Vachhani  |  Email :- jaivinvachhani@gmail.com</span>
+        </div>
+    </div>
+
+    <script>
+        // Self-contained, minified MD5 function. Source: http://pajhome.org.uk/crypt/md5
+        function md5(e){var t="0123456789abcdef",o=function(e,t){return e<<t|e>>>32-t};return function(e){var n,a="0123456789abcdef",i=function(e,t){return e<<t|e>>>32-t},r=function(e,t,n,a,r,c,s){return d(i(l(l(t,e),l(a,s)),c),r)+n},c=function(e,t,n,a,i,c,s){return r(t&n|~t&a,e,t,i,c,s)},s=function(e,t,n,a,i,c,s){return r(t&a|n&~a,e,t,i,c,s)},u=function(e,t,n,a,i,c,s){return r(t^n^a,e,t,i,c,s)},f=function(e,t,n,a,i,c,s){return r(n^(t|~a),e,t,i,c,s)},d=function(e,t){var n=l(e,t);return n},l=function(e,t){return e+t&4294967295};e=function(e){for(var t,n="",i=-1,r=e.length,c=[];++i<r;)c[i>>2]|=(t=e.charCodeAt(i))<<i%4*8;for(n=new Uint8Array(c.buffer),t=new TextEncoder,n=t.encode(e),r=(c=[]).length,i=-1;++i<n.length;)c[i>>2]|=n[i]<<i%4*8;return c[r=n.length>>2]|=128<<r%4*8,c[14+(r+9>>4<<4)]=8*n.length,c}(e);for(var h=1732584193,g=-271733879,p=-1732584194,m=271733878,v=0;v<e.length;v+=16)n=h,y=g,x=p,b=m,h=c(h,g,p,m,e[v],7,-680876936),m=c(m,h,g,p,e[v+1],12,-389564586),p=c(p,m,h,g,e[v+2],17,606105819),g=c(g,p,m,h,e[v+3],22,-1044525330),h=c(h,g,p,m,e[v+4],7,-176418897),m=c(m,h,g,p,e[v+5],12,1200080426),p=c(p,m,h,g,e[v+6],17,-1473231341),g=c(g,p,m,h,e[v+7],22,-45705983),h=c(h,g,p,m,e[v+8],7,1770035416),m=c(m,h,g,p,e[v+9],12,-1958414417),p=c(p,m,h,g,e[v+10],17,-42063),g=c(g,p,m,h,e[v+11],22,-1990404162),h=c(h,g,p,m,e[v+12],7,1804603682),m=c(m,h,g,p,e[v+13],12,-40341101),p=c(p,m,h,g,e[v+14],17,-1502002290),g=c(g,p,m,h,e[v+15],22,1236535329),h=s(h,g,p,m,e[v+1],5,-165796510),m=s(m,h,g,p,e[v+6],9,-1069501632),p=s(p,m,h,g,e[v+11],14,643717713),g=s(g,p,m,h,e[v],20,-373897302),h=s(h,g,p,m,e[v+5],5,-701558691),m=s(m,h,g,p,e[v+10],9,38016083),p=s(p,m,h,g,e[v+15],14,-660478335),g=s(g,p,m,h,e[v+4],20,-405537848),h=s(h,g,p,m,e[v+9],5,568446438),m=s(m,h,g,p,e[v+14],9,-1019803690),p=s(p,m,h,g,e[v+3],14,-187363961),g=s(g,p,m,h,e[v+8],20,1163531501),h=s(h,g,p,m,e[v+13],5,-1444681467),m=s(m,h,g,p,e[v+2],9,-51403784),p=s(p,m,h,g,e[v+7],14,1735328473),g=s(g,p,m,h,e[v+12],20,-1926607734),h=u(h,g,p,m,e[v+5],4,-378558),m=u(m,h,g,p,e[v+8],11,-2022574463),p=u(p,m,h,g,e[v+11],16,1839030562),g=u(g,p,m,h,e[v+14],23,-35309556),h=u(h,g,p,m,e[v+1],4,-1530992060),m=u(m,h,g,p,e[v+4],11,1272893353),p=u(p,m,h,g,e[v+7],16,-155497632),g=u(g,p,m,h,e[v+10],23,-1094730640),h=u(h,g,p,m,e[v+13],4,681279174),m=u(m,h,g,p,e[v],11,-358537222),p=u(p,m,h,g,e[v+3],16,-722521979),g=u(g,p,m,h,e[v+6],23,76029189),h=u(h,g,p,m,e[v+9],4,-640364487),m=u(m,h,g,p,e[v+12],11,-421815835),p=u(p,m,h,g,e[v+15],16,530742520),g=u(g,p,m,h,e[v+2],23,-995338651),h=f(h,g,p,m,e[v],6,-198630844),m=f(m,h,g,p,e[v+7],10,1126891415),p=f(p,m,h,g,e[v+14],15,-1416354905),g=f(g,p,m,h,e[v+5],21,-57434055),h=f(h,g,p,m,e[v+12],6,1700485571),m=f(m,h,g,p,e[v+3],10,-1894986606),p=f(p,m,h,g,e[v+10],15,-1051523),g=f(g,p,m,h,e[v+1],21,-2054922799),h=f(h,g,p,m,e[v+8],6,1873313359),m=f(m,h,g,p,e[v+15],10,-30611744),p=f(p,m,h,g,e[v+6],15,-1560198380),g=f(g,p,m,h,e[v+13],21,1309151649),h=f(h,g,p,m,e[v+4],6,-145523070),m=f(m,h,g,p,e[v+11],10,-1120210379),p=f(p,m,h,g,e[v+2],15,718787259),g=f(g,p,m,h,e[v+9],21,-343485551),h=l(h,n),g=l(g,y),p=l(p,x),m=l(m,b);return function(e){for(var t,n="",i=0;i<4;i++)for(t=e[i],j=0;j<4;j++)n+=a.charAt(t>>8*j+4&15)+a.charAt(t>>8*j&15);return n}(new Uint32Array([h,g,p,m]))}(e)}
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputText = document.getElementById('inputText');
+            const outputText = document.getElementById('outputText');
+            const cryptoTechnique = document.getElementById('cryptoTechnique');
+            const transformButton = document.getElementById('transformButton');
+            const copyButton = document.getElementById('copyButton');
+            const copyMessage = document.getElementById('copy-message');
+            const caesarShiftContainer = document.getElementById('caesar-shift-container');
+            const caesarShift = document.getElementById('caesarShift');
+
+            // --- Event Listeners ---
+            
+            // Show/hide Caesar shift input based on selection
+            cryptoTechnique.addEventListener('change', () => {
+                if (cryptoTechnique.value === 'caesar-cipher') {
+                    caesarShiftContainer.classList.remove('hidden');
+                } else {
+                    caesarShiftContainer.classList.add('hidden');
+                }
+            });
+
+            // Main transform logic
+            transformButton.addEventListener('click', async () => {
+                const technique = cryptoTechnique.value;
+                const input = inputText.value;
+                if (!input) {
+                    outputText.value = 'Please enter some text to transform.';
+                    return;
+                }
+
+                try {
+                    let result = '';
+                    switch (technique) {
+                        case 'base64-encode':
+                            // Handles UTF-8 characters correctly
+                            result = btoa(unescape(encodeURIComponent(input)));
+                            break;
+                        case 'base64-decode':
+                            // Handles UTF-8 characters correctly
+                            result = decodeURIComponent(escape(atob(input)));
+                            break;
+                        case 'url-encode':
+                            result = encodeURIComponent(input);
+                            break;
+                        case 'url-decode':
+                            result = decodeURIComponent(input);
+                            break;
+                        case 'md5-hash':
+                            result = md5(input);
+                            break;
+                        case 'sha256-hash':
+                            result = await sha256(input);
+                            break;
+                        case 'caesar-cipher':
+                            const shift = parseInt(caesarShift.value, 10) || 13;
+                            result = caesarCipher(input, shift);
+                            break;
+                        case 'morse-encode':
+                            result = morseEncode(input);
+                            break;
+                        case 'morse-decode':
+                            result = morseDecode(input);
+                            break;
+                        case 'reverse-text':
+                            result = input.split('').reverse().join('');
+                            break;
+                        default:
+                            result = 'Unknown technique selected.';
+                    }
+                    outputText.value = result;
+                } catch (error) {
+                    console.error('Transformation Error:', error);
+                    outputText.value = `Error: ${error.message}. Please check your input (e.g., ensure it's valid Base64 for decoding).`;
+                }
+            });
+            
+            // Copy to clipboard logic
+            copyButton.addEventListener('click', () => {
+                if (!outputText.value) return;
+                const tempTextArea = document.createElement('textarea');
+                tempTextArea.value = outputText.value;
+                document.body.appendChild(tempTextArea);
+                tempTextArea.select();
+                try {
+                    document.execCommand('copy');
+                    copyMessage.textContent = 'Copied to clipboard!';
+                } catch (err) {
+                    copyMessage.textContent = 'Failed to copy!';
+                }
+                document.body.removeChild(tempTextArea);
+                setTimeout(() => { copyMessage.textContent = ''; }, 2000);
+            });
+
+            // --- Cryptography & Encoding Functions ---
+
+            // SHA-256 using the modern SubtleCrypto API
+            async function sha256(str) {
+                const buffer = new TextEncoder('utf-8').encode(str);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            }
+            
+            // Caesar Cipher implementation
+            function caesarCipher(str, amount) {
+                if (amount < 0) return caesarCipher(str, amount + 26);
+                let output = '';
+                for (let i = 0; i < str.length; i++) {
+                    let char = str[i];
+                    if (char.match(/[a-z]/i)) {
+                        let code = str.charCodeAt(i);
+                        if (code >= 65 && code <= 90) { // Uppercase
+                            char = String.fromCharCode(((code - 65 + amount) % 26) + 65);
+                        } else if (code >= 97 && code <= 122) { // Lowercase
+                            char = String.fromCharCode(((code - 97 + amount) % 26) + 97);
+                        }
+                    }
+                    output += char;
+                }
+                return output;
+            }
+
+            // Morse Code Maps and Functions
+            const morseCodeMap = {
+                'A':'.-', 'B':'-...','C':'-.-.','D':'-..', 'E':'.','F':'..-.','G':'--.','H':'....',
+                'I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.',
+                'Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-',
+                'Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....',
+                '6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/',
+                '.':'.-.-.-',',':'--..--','?':'..--..',"'":'.----.','!':'-.-.--','/':'-..-.',
+                '(':'-.--.',')':'-.--.-','&':'.-...',':':'---...',';':'-.-.-.','=':'-...-',
+                '+':'.-.-.','-':'-....-','_':'..--.-','"':'.-..-.','$':'...-..-','@':'.--.-.'
+            };
+            const reverseMorseCodeMap = Object.fromEntries(Object.entries(morseCodeMap).map(([k, v]) => [v, k]));
+
+            function morseEncode(str) {
+                return str.toUpperCase().split('').map(char => morseCodeMap[char] || '').join(' ').trim();
+            }
+            
+            function morseDecode(str) {
+                return str.trim().split(' ').map(code => reverseMorseCodeMap[code] || '').join('');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
