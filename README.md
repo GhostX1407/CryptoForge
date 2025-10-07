@@ -30,7 +30,7 @@ Simple Transformations:
 
 Reverse Text: A fun and simple way to obfuscate text by reversing its order.
 
-User Interface Features
+User Interface Features - 
 Responsive Design: Looks great on desktops, tablets, and mobile devices.
 
 Copy to Clipboard: Instantly copy the output with a single click.
@@ -41,14 +41,14 @@ Error Handling: Provides user-friendly error messages for invalid operations (e.
 
 Minimalist Aesthetic: A clean, light theme that's easy on the eyes.
 
-How to Use
+How to Use - 
 Since CryptoForge is a single, self-contained HTML file, using it is incredibly simple:
 
 Download: Clone this repository or download the crypto_tool.html file.
 
-Open: Open crypto_tool.html in any modern web browser (like Chrome, Firefox, or Edge).
+Open: Open crypto_tool.html in any modern web browser (like Chrome, Firefox, or Edge). 
 
-Use:
+Use: 
 
 Enter your text into the "Input Text" area.
 
@@ -58,7 +58,7 @@ Click the Transform button.
 
 The result will appear in the "Output" area, ready to be copied.
 
-Technologies Used
+Technologies Used - 
 HTML5: For the structure of the application.
 
 Tailwind CSS: For a modern, utility-first approach to styling.
@@ -67,10 +67,11 @@ Vanilla JavaScript (ES6+): For all the logic and functionality. No external fram
 
 Web Crypto API: Used for the secure implementation of the SHA-256 hash.
 
-Contributing
+Contributing 
 Contributions are welcome! If you have ideas for new features, find a bug, or want to improve the code, please feel free to open an issue or submit a pull request.
 
-License
-This project is open-source and available under the MIT License.
+License 
+This project is open-source and available under the MIT License. 
 
-Made by Jaivin Vachhani Email: jaivinvachhani@gmail.com
+Made by Jaivin Vachhani 
+Email: jaivinvachhani@gmail.com
