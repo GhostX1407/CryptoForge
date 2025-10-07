@@ -1,10 +1,10 @@
 # CryptoForge - A Cryptography and Encoding Tool
 CryptoForge is a versatile, client-side web application that allows you to encode, decode, and hash text using a variety of common cryptographic and encoding techniques. It's built with simplicity and ease of use in mind, requiring no backend or special setup to run.
 
-Live Demo 
+Live Demo --> 
 [Click Here!](https://ghostx1407.github.io/CryptoForge/CryptoForge.html)
 
-Features :
+Features 
 
 CryptoForge provides a clean, minimal interface and supports the following techniques:
 
